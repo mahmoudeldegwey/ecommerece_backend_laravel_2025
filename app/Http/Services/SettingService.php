@@ -1,7 +1,7 @@
 <?php 
 namespace App\Http\Services;
 
-use App\Http\Repositories\Interfaces\SettingInterFace;
+use App\Repositories\Interfaces\SettingInterFace;
 use App\Http\Resources\SettingResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

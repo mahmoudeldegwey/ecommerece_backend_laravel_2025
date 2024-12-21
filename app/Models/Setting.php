@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends BaseModel
 {
-    use SoftDeletes;
-
     protected $table = 'settings';
 
     /**

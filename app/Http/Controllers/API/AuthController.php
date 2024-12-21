@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -26,6 +27,17 @@ class AuthController extends Controller
     		return response()->json(['error' => true,'message' => $e->getMessage()]);
     	}
 
-	    return response()->json(['user' => $user, ...['token' => $user->createToken($request->email)->plainTextToken]]);
+	    return response()->json(['error' => false,'data' => [
+	    	'user' => $user, ...['token' => $user->createToken($request->email)->plainTextToken]
+	    ]]);
+    }
+
+    public function getUser(Request $request){
+    	return new UserResource($request->user());
+    	return ['data' => ['user' => auth('sanctum')->user() , 'token' => auth('sanctum')->user()->createToken('email')->plainTextToken ]];
+    }
+
+    public function logout(){
+    	return auth('sanctum')->user()->tokens()->delete();
     }
 }

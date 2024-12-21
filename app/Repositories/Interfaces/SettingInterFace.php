@@ -1,7 +1,5 @@
 <?php
-namespace App\Http\Repositories\Interfaces;
-
-use App\Http\Repositories\Interfaces\RepositoryInterface;
+namespace App\Repositories\Interfaces;
 
 interface SettingInterFace extends RepositoryInterface
 {

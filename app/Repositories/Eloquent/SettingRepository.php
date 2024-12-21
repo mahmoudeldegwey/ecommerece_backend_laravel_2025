@@ -1,9 +1,8 @@
 <?php
-namespace App\Http\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Modules\Core\Repositories\Eloquent\RepositoriesAbstract;
-use Modules\Core\Repositories\Interfaces\SettingInterFace;
-use Cache;
+use App\Repositories\Eloquent\RepositoriesAbstract;
+use App\Repositories\Interfaces\SettingInterFace;
 
 class SettingRepository extends RepositoriesAbstract implements SettingInterFace
 {
