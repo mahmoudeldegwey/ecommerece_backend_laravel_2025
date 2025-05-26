@@ -1,11 +1,11 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller;
-use Modules\ACL\Http\Services\RoleService;
-use Modules\ACL\Http\Requests\{CreateRoleRequest,AssignRoleRequest};
+use App\Http\Services\RoleService;
+use App\Http\Requests\{CreateRoleRequest,AssignRoleRequest};
 use Illuminate\Http\Request;
-use Modules\ACL\Models\Role;
+use App\Models\Role;
 
 class RoleController extends Controller
 {

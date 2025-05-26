@@ -38,19 +38,19 @@ class SettingService {
     {
         try {
 
-            $data = $request->all();
+            $data = $request->settings;
             $settingsData = $this->settingInterFace->loadSettingData()->pluck('value','key')->toArray();
             $insertData = [];
 
             foreach($data as $key => $value){
-                $keyExist = array_key_exists($key, $settingsData);
+                $keyExist = array_key_exists($value['key'], $settingsData);
                 
                 if ($keyExist) {
-                    $this->settingInterFace->update(['key' => $key],['value' => $value]);
+                    $this->settingInterFace->update(['key' => $value['key']],['value' => $value['value']]);
                     continue;
                 }  
 
-                $insertData[] = ['key' => $key,'value' => $value];
+                $insertData[] = ['key' => $value['key'],'value' => $value['value']];
             }
 
             $this->settingInterFace->insert($insertData);
@@ -59,7 +59,7 @@ class SettingService {
             return $this->makeResponseErrors($e->getMessage());
         }
 
-        return response()->json(['error' => false,'message' => 'Successfully update'],JsonResponse::HTTP_OK);
+        return $this->makeResponseSuccessful();
 
     }
 

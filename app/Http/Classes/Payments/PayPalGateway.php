@@ -22,7 +22,7 @@ class PayPalGateway extends PaymentGatewayAbstract   {
             "intent" => "CAPTURE",
             "application_context" => [
                 "return_url" => route('checkout.success',['payment_method' => 'paypal_gateway']),
-                "cancel_url" => route('checkout.success'),
+                "cancel_url" => route('checkout.cancel',['payment_method' => 'paypal_gateway']),
             ],
             "purchase_units" => [
                 0 => [
@@ -55,7 +55,7 @@ class PayPalGateway extends PaymentGatewayAbstract   {
 
     }
 
-    public function success($token){
+    public function success(?string $token){
         
         $this->payPalClient->setApiCredentials(config('paypal'));
         $this->payPalClient->getAccessToken();

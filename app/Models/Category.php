@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relation\{BelongsTo,HasMany};
 
 class Category extends BaseModel
 {
-    protected $table = 'brands';
+    protected $table = 'categories';
 
     protected $fillable = ['name','name_ar','image','parent_id'];
 

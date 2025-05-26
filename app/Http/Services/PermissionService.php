@@ -1,7 +1,7 @@
 <?php 
 namespace App\Http\Services;
 
-use App\Http\Repositories\Interfaces\PermissionInterFace;
+use App\Repositories\Interfaces\PermissionInterFace;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\{Permission};
@@ -67,7 +67,7 @@ class PermissionService {
             return $this->makeResponseErrors($e->getMessage());
         }
 
-        return $this->makeResponseSuccessful(@trans('core::messages.created_successfully'));
+        return $this->makeResponseSuccessful();
     }
 
     public function show(){

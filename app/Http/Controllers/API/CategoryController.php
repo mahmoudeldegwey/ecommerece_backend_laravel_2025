@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\CategoryRequest;
+use App\Traits\ImageTrait;
 
 class CategoryController extends Controller
 {
+    use ImageTrait;
+
      /**
      * Display a listing of the resource.
      */
@@ -26,10 +29,16 @@ class CategoryController extends Controller
     {
         try {
             
-            Category::create($request->validated());
+            $data = $request->validated();
+
+            if($request->file('image')){
+                $data['image'] = $this->uploadImage($request->file('image'),"categories");
+            }
+            
+            Category::create($data);
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();
@@ -64,7 +73,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->destroy();
+        $category->delete();
 
         return $this->makeResponseSuccessful();
     }

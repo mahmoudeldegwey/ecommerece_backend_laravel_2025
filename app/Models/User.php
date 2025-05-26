@@ -10,10 +10,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Contracts\Permission as PermissionContract;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasPermissions;
+    use HasFactory, SoftDeletes ,Notifiable, HasApiTokens, HasPermissions,HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -37,6 +39,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected $guard = "admin";
 
     /**
      * Get the attributes that should be cast.
@@ -83,5 +87,8 @@ class User extends Authenticatable
         return $this->hasDirectPermission($permission) || $this->hasPermissionViaRole($permission);
     }
 
+    public function role() : BelongsTo {
+        return $this->belongsTo(Role::class);
+    }
 
 }

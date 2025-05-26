@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller;
 use App\Http\Services\PermissionService;

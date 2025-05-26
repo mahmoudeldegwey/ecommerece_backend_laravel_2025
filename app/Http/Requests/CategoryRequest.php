@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class CategoryRequest extends FormRequest
+class CategoryRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +21,7 @@ class CategoryRequest extends FormRequest
         return [
             'name' => 'required',
             'name_ar' => 'required',
-            'image' => 'required'
+            'image' => 'mimes:jpg,png,webp'
         ];
     }
 }

@@ -36,7 +36,6 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             return $this->makeResponseErrors($e->getMessage());
         }
-
     }
 
 
@@ -47,7 +46,13 @@ class CheckoutController extends Controller
      */
     public function cancel(Request $request)
     {
-        return $this->makeResponseErrors('You have canceled the transaction.');
+         try {
+               
+           return $response = $this->paymentService->cancel($request);
+
+        } catch (\Exception $e) {
+            return $this->makeResponseErrors($e->getMessage());
+        }
     }
 
 }

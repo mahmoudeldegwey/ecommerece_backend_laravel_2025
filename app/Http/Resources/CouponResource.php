@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class CouponResource extends JsonResource
 {
@@ -18,10 +19,10 @@ class CouponResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'code' => $this->code,
-            'start_at' => $this->start_at,
-            'end_at' => $this->start_at
-            'type' => $this->start_at
-            'amount' => $this->start_at,
+            'start_at' => Carbon::parse($this->start_at)->format('M/d/Y') ,
+            'end_at' => Carbon::parse($this->end_at)->format('M/d/Y'),
+            'type' => $this->type,
+            'amount' => $this->amount,
             'usage' => $this->usage
         ];
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Coupon;
 use App\Http\Resources\CouponResource;
+use App\Http\Requests\CouponRequest;
 
 class CouponController extends Controller
 {
@@ -63,7 +64,7 @@ class CouponController extends Controller
      */
     public function destroy(Coupon $coupon)
     {
-        $coupon->destroy();
+        $coupon->delete();
 
         return $this->makeResponseSuccessful();
     }

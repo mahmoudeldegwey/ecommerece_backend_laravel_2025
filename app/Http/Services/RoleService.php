@@ -1,16 +1,19 @@
 <?php 
 namespace App\Http\Services;
 
-use App\Http\Repositories\Interfaces\{RoleInterFace,PermissionInterFace,UserInterFace};
+use App\Repositories\Interfaces\{RoleInterFace,PermissionInterFace,UserInterFace};
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pipeline\Pipeline;
-use Modules\ACL\Http\Resources\RoleResource;
-use App\Http\Filters\RoleNameFilter;
-use App\Http\Models\Role;
+use App\Http\Resources\RoleResource;
+use App\Filters\RoleNameFilter;
+use App\Models\Role;
+use App\Traits\ResponsesTrait;
 use DB;
 
 class RoleService {
+
+    use ResponsesTrait;
 
     public function __construct(
         private RoleInterFace $roleInterFace,
@@ -23,7 +26,7 @@ class RoleService {
     public function index(Request $request){
         try {
             
-            $paginate = $request->paginate ?? 10;
+            $paginate = $request->paginate ?? 2;
 
             $query = $this->roleInterFace->getModel()->where('guard_name',$request->guard);
 
@@ -53,7 +56,7 @@ class RoleService {
         }
         DB::commit();
 
-        return $this->makeResponseSuccessful(@trans('core::messages.created_successfully'));
+        return $this->makeResponseSuccessful();
     }
 
     public function show(Role $role){
@@ -76,10 +79,10 @@ class RoleService {
             $role->syncPermissions($request->permissions);
 
         }catch(\Exception $e){
-            return response()->json(['error' => true,'message' => $e->getMessage()],JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->makeResponseErrors($e->getMessage());
         }
 
-        return $this->makeResponseSuccessful(@trans('core::messages.updated_successfully'));
+        return $this->makeResponseSuccessful();
     }
 
     public function destroy(Role $role)
@@ -90,10 +93,10 @@ class RoleService {
             $role->delete();
 
         } catch (\Exception $e) {
-            return response()->json(['error' => true,'message' => $e->getMessage()],JsonResponse::HTTP_INTERNAL_SERVER_ERROR);   
+            return $this->makeResponseErrors($e->getMessage());
         }
 
-        return $this->makeResponseSuccessful(@trans('core::messages.deleted_successfully'));
+        return $this->makeResponseSuccessful();
     }
 
     public function assignRoleToUser(Request $request)
@@ -110,10 +113,10 @@ class RoleService {
             $user->assignRole($role);
             
         } catch (\Exception $e) {
-            return response()->json(['error' => true,'message' => $e->getMessage()],JsonResponse::HTTP_INTERNAL_SERVER_ERROR);    
+            return $this->makeResponseErrors($e->getMessage());   
         }
         
-        return response()->json(['error' => false,'message' => @trans('core::messages.assign_role_to_user_successfully')],JsonResponse::HTTP_OK);
+        return $this->makeResponseSuccessful();
 
     }
 
@@ -124,10 +127,10 @@ class RoleService {
             $role->syncPermissions($request->permissions);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => true,'message' => $e->getMessage()],JsonResponse::HTTP_INTERNAL_SERVER_ERROR);   
+           return $this->makeResponseErrors($e->getMessage());    
         }
         
-        return response()->json(['error' => false,'message' => @trans('core::messages.assign_permission_to_role_successfully')],JsonResponse::HTTP_OK);   
+        return $this->makeResponseSuccessful();
     }
 
     public function clearCache()
@@ -135,10 +138,10 @@ class RoleService {
         try {
             app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();   
         } catch (\Exception $e) {
-            return response()->json(['error' => true,'message' => $e->getMessage()],JsonResponse::HTTP_INTERNAL_SERVER_ERROR);   
+            return $this->makeResponseErrors($e->getMessage()); 
         }
 
-        return response()->json(['error' => false,'message' => @trans('core::messages.clear_cache_successfully')],JsonResponse::HTTP_OK);
+        return $this->makeResponseSuccessful();
     }
 
 
