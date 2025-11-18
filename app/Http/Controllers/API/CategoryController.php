@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\CategoryRequest;
 use App\Traits\ImageTrait;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
@@ -38,7 +39,7 @@ class CategoryController extends Controller
             Category::create($data);
 
         } catch (\Exception $e) {
-            return $this->makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->makeResponseSuccessful();
@@ -62,7 +63,7 @@ class CategoryController extends Controller
             Category::where('id',$category->id)->update($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->makeResponseSuccessful();
@@ -73,8 +74,14 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        try {
+            
+            $category->delete();
 
+        } catch (\Exception $e) {
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
         return $this->makeResponseSuccessful();
     }
 

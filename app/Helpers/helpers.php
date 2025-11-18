@@ -86,3 +86,36 @@ if (!function_exists('setting')) {
         }
     }
 }
+
+if (!function_exists('format_price')) {
+    function format_price(float $price){
+        return strtoupper(setting('default_currency')) . formatCurrency($price) ;
+    }
+}
+
+if(!function_exists('formatCurrency')){
+    function formatCurrency(float $amount): string
+    {
+        $formatter = new NumberFormatter(setting('default_currency'), NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($amount, setting('default_currency'));
+    }
+}
+
+if(!function_exists('getDiscountRate')){
+    function getDiscountRate(float $sale_price, float $price )
+    {
+        return round((($price - $sale_price) / $price) * 100) ;
+    }
+}
+
+if (!function_exists('avaliable_payment_methods')) {
+    function avaliable_payment_methods(){
+        return ["COD","instaPay","creditCard"];
+    }
+}
+
+if(!function_exists('order_statuses')){
+    function order_statuses (){
+        return ['delivered','pending','confirmed','shipped','cancelled','refunded','completed'];
+    }
+}

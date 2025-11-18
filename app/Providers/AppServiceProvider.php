@@ -8,7 +8,7 @@ use App\Models\{Setting,Role,User,Permission,Product};
 use App\Models\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use App\Http\Facades\Permission as PermissionFacade;
-
+use Laravel\Passport\Passport;
 use Illuminate\Foundation\AliasLoader;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,6 +48,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        Passport::loadKeysFrom(storage_path());
 
         $this->app->booted(function () {
             $loader = AliasLoader::getInstance();

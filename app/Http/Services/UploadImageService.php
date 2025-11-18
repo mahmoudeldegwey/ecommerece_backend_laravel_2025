@@ -24,25 +24,23 @@ class UploadImageService {
             $extension = "webp";
             $name = $this->getImageName($file);
 
+            $url = $this->uploadImage($file,$destination);
+
             $data = [
                 "name" => $name,
                 "extension" => $extension,
                 "model_id" => $request->model_id,
                 "model_type" => $this->getModelType($request->model_type),
-                "url" => asset("$destination/$name.$extension")
+                "url" => $url
             ];
         
             $image = Image::create($data);
             
-            if ($image) {
-                $this->uploadImage($file,$destination);
-            }
-
         } catch (\Exception $e) {
             return $this->makeResponseErrors($e->getMessage());
         }
 
-        return $this->makeResponseSuccessful();
+        return $this->makeResponseSuccessful(['url' =>  $url]);
 
     }
 

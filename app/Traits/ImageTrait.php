@@ -29,7 +29,7 @@ trait ImageTrait
     }
 
     public function getImageName($image){
-        return File::name($image->getClientOriginalName())."-".microtime(true);
+        return str_replace(' ', '-', File::name($image->getClientOriginalName()))."-".microtime(true);
     }
 
     public function removeImage(string $folder = "" ,string $image_name = ""){

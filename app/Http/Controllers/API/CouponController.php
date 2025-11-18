@@ -29,7 +29,7 @@ class CouponController extends Controller
             Coupon::create($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();
@@ -53,7 +53,7 @@ class CouponController extends Controller
             Coupon::where('id',$coupon->id)->update($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();

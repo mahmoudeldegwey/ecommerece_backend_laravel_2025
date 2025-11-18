@@ -22,7 +22,9 @@ class SettingService {
         try {
             
             if ($request->type == "frontend") {
-                $data = $this->settingInterFace->loadSettingData(['email','company','phone','facebook','twitter','instagram','youtube','linkedin','site_key'],'frontend');                
+                $data = $this->settingInterFace->loadSettingData([
+                    'website_name','website_description','website_description_ar','email','facebook','twitter',
+                    'instagram','youtube','phone_number','copyrights','copyrights_ar','website_name_ar','default_language','default_currency','default_country','website_logo'],'frontend');                
             }else if($request->type == "dashboard"){
                 $data = $this->settingInterFace->loadSettingData();
             }
@@ -30,6 +32,8 @@ class SettingService {
         } catch (\Exception $e) {
            return $this->makeResponseErrors($e->getMessage());
         }
+
+        return $data;
 
         return SettingResource::collection($data);
     }

@@ -29,7 +29,7 @@ class SizeController extends Controller
             Size::create($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();
@@ -53,7 +53,7 @@ class SizeController extends Controller
             Size::where('id',$size->id)->update($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();

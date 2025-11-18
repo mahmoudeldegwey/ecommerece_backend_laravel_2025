@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Pipeline\Pipeline;
 use App\Models\Product;
 use App\Traits\ResponsesTrait;
-use App\Filters\{ProductNameFilter,PriceRangeFilter};
+use App\Filters\Products\{ProductNameFilter,PriceRangeFilter,BrandIDFilter,CategoryIDFilter,OrderByFilter};
 use App\Http\Resources\ProductResource;
 use App\Traits\ImageTrait;
 use DB;
@@ -30,16 +30,20 @@ class ProductService {
         try {
 
             $query = $this->productInterFace->getModel()->select('products.*')
-            ->with(['images','brand']);
+            ->with(['images','brand','categories','colors','sizes']);
 
             $data =  app(Pipeline::class)
                 ->send($query)
                 ->through([
                     ProductNameFilter::class,
                     PriceRangeFilter::class,
+                    BrandIDFilter::class,
+                    CategoryIDFilter::class,
+                    OrderByFilter::class
                 ])
                 ->thenReturn()
-                ->paginate(10);
+                ->orderBy('id',$request->get('order_by','DESC'))
+                ->paginate($request->get('paginate',20));
 
         } catch (\Exception $e) {
             return $this->makeResponseErrors($e->getMessage());
@@ -114,7 +118,9 @@ class ProductService {
             DB::rollBack();
             return $this->makeResponseErrors($e->getMessage());
         }
+
         DB::commit();
+
         return $this->makeResponseSuccessful();
     }
 
@@ -146,6 +152,7 @@ class ProductService {
                 $color['color_id'] => [
                     'price' => $color['price'] ?? null,
                     'image' => $color['image'] ?? null,
+                    'value' => $color['value'] ?? null
                 ]
             ];
         })

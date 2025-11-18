@@ -7,7 +7,7 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\{ProductRequest,UpdateProductRequest};
 use App\Http\Services\ProductService;
 
 class ProductController extends Controller
@@ -33,7 +33,8 @@ class ProductController extends Controller
         return $this->productService->store($request);
     }
 
-    public function update(Product $product, ProductRequest $request): String { 
+    public function update(Product $product, UpdateProductRequest $request) {
+        //return $request->all();
        return $this->productService->update($product,$request);
     }
 

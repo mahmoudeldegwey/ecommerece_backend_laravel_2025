@@ -16,7 +16,10 @@ use App\Http\Controllers\API\{
     PermissionController,
     ColorController,
     SizeController,
-    UploadImageControll
+    UploadImageControll,
+    ClientController,
+    AnnouncementController,
+    ProductReviewController
 };
 
 Route::group(['prefix' => 'dashboard'],function(){
@@ -34,16 +37,42 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
         'categories' => CategoryController::class,
         'coupons'  => CouponController::class,
         'settings' => SettingController::class,
-        'products' => ProductController::class,
+        
         'permission' => PermissionController::class,
         'roles' => RoleController::class,
         'users' => UserController::class,
         'colors' => ColorController::class,
         'sizes' => SizeController::class,
-        'upload-image' => UploadImageControll::class
+        'upload-image' => UploadImageControll::class,
+        'clients' => ClientController::class,
+        'orders' => OrderController::class,
+        'announcements' => AnnouncementController::class,
+        'product-reviews' => ProductReviewController::class
     ]);
 
-    Route::apiResource('orders', OrderController::class);
+    //orders
+    Route::controller(OrderController::class)->prefix('orders')->group(function () {
+        Route::put('update-status/{order}','updateStatus');
+    });
+
+    //users
+    Route::controller(UserController::class)->prefix('users')->group(function () {
+        Route::post('update-password/{user}','updatePassword');
+    });
+
+    //clients
+    Route::controller(ClientController::class)->prefix('clients')->group(function () {
+        Route::post('update-password/{client}','updatePassword');
+    });
+
+    //product-reviews
+    Route::controller(ProductReviewController::class)->prefix('product-reviews')->group(function () {
+        Route::post('{product_review}/approve-review','approveReview');
+    });
+
+    Route::apiResource('products',ProductController::class)->only(['index','store','show','destroy']);
+    Route::post('products/{product}',[ProductController::class,'update']);
+
 });
 
 

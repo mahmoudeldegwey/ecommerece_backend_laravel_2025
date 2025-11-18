@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
 use App\Http\Services\UserService;
-use App\Http\Requests\{CreateUserRequest,UpdateUserRequest};
+use App\Http\Requests\{CreateUserRequest,UpdateUserRequest,UpdatePasswordRequest};
 
 class UserController
 {

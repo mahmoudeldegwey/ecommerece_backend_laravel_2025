@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Http\Resources\BrandResource;
 use App\Http\Requests\BrandRequest;
+use Illuminate\Http\JsonResponse;
 
 class BrandController extends Controller
 {
@@ -29,7 +30,7 @@ class BrandController extends Controller
             Brand::create($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->makeResponseSuccessful();
@@ -53,7 +54,7 @@ class BrandController extends Controller
             Brand::where('id',$brand->id)->update($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->makeResponseSuccessful();
@@ -64,7 +65,13 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        $brand->delete();
+        try {
+            
+            $brand->delete();
+
+        } catch (\Exception $e) {
+            return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return $this->makeResponseSuccessful();
     }

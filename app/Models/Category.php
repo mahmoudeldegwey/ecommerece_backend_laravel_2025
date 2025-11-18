@@ -9,9 +9,9 @@ class Category extends BaseModel
 {
     protected $table = 'categories';
 
-    protected $fillable = ['name','name_ar','image','parent_id'];
+    protected $fillable = ['name','name_ar','image','parent_id','is_menu','is_home'];
 
-    public function Parent() : BelongsTo{
+    public function parent() : BelongsTo{
         return $this->belongsTo($this,'parent_id');
     }
 

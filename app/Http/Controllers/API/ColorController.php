@@ -29,7 +29,7 @@ class ColorController extends Controller
             Color::create($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();
@@ -53,7 +53,7 @@ class ColorController extends Controller
             Color::where('id',$color->id)->update($request->validated());
 
         } catch (\Exception $e) {
-            return makeResponseErrors($e->getMessage());
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return $this->makeResponseSuccessful();

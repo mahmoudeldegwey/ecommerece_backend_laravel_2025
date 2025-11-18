@@ -4,9 +4,9 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use App\Models\{Order,OrderProduct,Product};
+use App\Models\{Order,Product};
 use App\Http\Resources\OrderResource;
-use App\Http\Requests\OrderRequest;
+use App\Http\Requests\OrderUpdateStatusRequest;
 use App\Mail\NewOrderCreatedEmail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Mail;
@@ -15,60 +15,55 @@ use Auth;
 
 class OrderController extends Controller
 {
-	public function index(Request $request) : JsonResource {
+    protected int $paginate = 10;
+
+	public function index(Request $request) {
         try {
 
-            $data = Order::with('products')->select('id','order_number','total_price','product_count','status')
+            $data = Order::with(['country','city'])
+                ->select(['id','order_number','total_price','final_cost','products_count','products_quantity','status','created_at',
+                    'updated_at','customer_name','customer_phone','payment_method','shipping_cost','country_id','city_id'])
             	->orderBy('orders.id','DESC')
-            	->paginate(10);
+            	->paginate($request->paginate ?? $this->paginate);
 
         } catch (\Exception $e) { 
-            return response()->json(["error" => true , "message" => $e->getMessage()] , JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->makeResponseErrors($e->getMessage());
         }
 
         return OrderResource::collection($data);
     }
 
-    public function store(OrderRequest $request) : JsonResource{
-    	
-    	try {
-    		
-            DB::beginTransaction();
+    public function show(Order $order){
+        try {
 
-    		$products = [];
-    		$total_price = 0;
-    	
-    		foreach (collect($request->products) as $product) {
-
-    			$total_price += $product['price'] * $product['quantity'];
-
-    			$products[] = [
-    				'product_id' => $product['product_id'],
-    				'product_quantity' => $product['quantity']
-    			];
-
-                Product::where('id',$product['product_id'])->decrement('quantity', $product['quantity']);
-    		}
-    		
-			$order = Order::create([
-    			'order_number' => 'OR'.strtotime(date('h:m:i')),
-    			'status' => 'pending',
-    			'product_count' => count($request->products),
-    			'total_price' => $total_price,
-                'user_id' => Auth::user()->id
-    		]);
-
-    		$order->products()->sync($products);
+            $data = Order::with(['country','city','items.product'])
+                ->where('orders.id',$order->id)
+                ->select(['orders.*'])->first();
             
-            DB::commit();
+        } catch (\Exception $e) {
+          return $this->makeResponseErrors($e->getMessage()); 
+        }
 
-            Mail::to('test@yahoo.com')->send(new NewOrderCreatedEmail($order));
+        return new OrderResource($data);
+    }
 
-    	} catch (\Exception $e) {
-    		DB::rollback();
-    		return response()->json(["error" => true , "message" => $e->getMessage()] , JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-    	}
+    public function updateStatus(OrderUpdateStatusRequest $request, Order $order){
+    	try {
 
-    	return new OrderResource($order);
+            $status = $request->status;
+            
+            if(in_array($order->status,['cancelled','refunded','delivered','refused'])){
+                return $this->makeResponseErrors("order status $order->status can not change ","Errors",JsonResponse::HTTP_UNPROCESSABLE_ENTITY );
+            }
+
+            $order->status = $request->status;
+            $order->save();
+            
+        } catch (\Exception $e) {
+            return $this->makeResponseErrors($e->getMessage());
+        }
+
+        return $this->makeResponseSuccessful();
+
     }
 }

@@ -3,10 +3,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{BelongsToMany,BelongsTo,HasMany};
+use App\Http\Classes\Shareable;
 
 class Product extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, Shareable;
     
     protected $table = 'products';
 

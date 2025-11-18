@@ -12,7 +12,8 @@ class ProductColor extends Pivot
         'product_id',
         'color_id',
         'image',
-        'price'
+        'price',
+        'value'
     ];
 
 }

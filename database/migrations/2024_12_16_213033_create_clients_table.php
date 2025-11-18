@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('username',250);
+            $table->string('email',250);
+            $table->string('address',250)->nullable();
+            $table->string('password',100);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent();
+            $table->softDeletes();
         });
     }
 
