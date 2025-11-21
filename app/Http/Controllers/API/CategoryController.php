@@ -56,11 +56,17 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(Category $category,CategoryRequest $request)
     {
         try {
             
-            Category::where('id',$category->id)->update($request->validated());
+            $data = $request->validated();
+
+            if($request->file('image')){
+                $data['image'] = $this->uploadImage($request->file('image'),"categories");
+            }
+            
+            Category::where('id',$category->id)->update($data);
 
         } catch (\Exception $e) {
             return $this->makeResponseErrors($e->getMessage(),'Errors',JsonResponse::HTTP_INTERNAL_SERVER_ERROR);

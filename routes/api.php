@@ -37,7 +37,6 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
         'categories' => CategoryController::class,
         'coupons'  => CouponController::class,
         'settings' => SettingController::class,
-        
         'permission' => PermissionController::class,
         'roles' => RoleController::class,
         'users' => UserController::class,
@@ -49,6 +48,9 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
         'announcements' => AnnouncementController::class,
         'product-reviews' => ProductReviewController::class
     ]);
+
+    Route::apiResource('categories',CategoryController::class)->only(['index','store','show','destroy']);
+    Route::post('categories/{category}',[CategoryController::class,'update']);
 
     //orders
     Route::controller(OrderController::class)->prefix('orders')->group(function () {

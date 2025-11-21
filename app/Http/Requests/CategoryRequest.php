@@ -21,7 +21,7 @@ class CategoryRequest extends ApiRequest
         return [
             'name' => 'required',
             'name_ar' => 'required',
-            'image' => 'mimes:jpg,png,webp'
+            'image' => 'nullable|mimes:jpg,png,webp'
         ];
     }
 }

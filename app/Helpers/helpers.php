@@ -93,13 +93,23 @@ if (!function_exists('format_price')) {
     }
 }
 
-if(!function_exists('formatCurrency')){
+// if (!function_exists('formatCurrency')) {
+//     function formatCurrency(float $amount): string
+//     {
+//         $formatter = new NumberFormatter(setting('default_currency'), NumberFormatter::CURRENCY);
+//         return $formatter->formatCurrency($amount, setting('default_currency'));
+//     }
+// }
+
+if (!function_exists('formatCurrency')) {
     function formatCurrency(float $amount): string
     {
-        $formatter = new NumberFormatter(setting('default_currency'), NumberFormatter::CURRENCY);
-        return $formatter->formatCurrency($amount, setting('default_currency'));
+        $currency = setting('default_currency') ?? 'USD';
+
+        return number_format($amount, 2) . ' ' . strtoupper($currency);
     }
 }
+
 
 if(!function_exists('getDiscountRate')){
     function getDiscountRate(float $sale_price, float $price )
