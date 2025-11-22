@@ -1,5 +1,6 @@
 <?php 
 use App\Repositories\Interfaces\SettingInterFace;
+use App\Models\{City,Country};
 
 if (!function_exists('get_unique_id')) {
     /**
@@ -127,5 +128,153 @@ if (!function_exists('avaliable_payment_methods')) {
 if(!function_exists('order_statuses')){
     function order_statuses (){
         return ['delivered','pending','confirmed','shipped','cancelled','refunded','completed'];
+    }
+}
+
+
+/**
+ * Parse address JSON to array
+ */
+if(!function_exists('parseBillingAddress')){
+    function parseBillingAddress($address): ?array
+    {
+        if (is_array($address)) {
+            return $address;
+        }
+
+        if (is_string($address)) {
+            return json_decode($address, true);
+        }
+
+        return null;
+    }
+}
+
+/**
+ * Format address for display
+ */
+if(!function_exists('format')){
+    function format(?array $address): string
+    {
+        if (!$address) {
+            return 'N/A';
+        }
+
+        $lines = [];
+
+        // Name
+        if (isset($address['username'])) {
+            $lines[] = $address['username'];
+        }
+
+        // Phone
+        if (isset($address['phone'])) {
+            $lines[] = 'Phone: ' . $address['phone'];
+        }
+
+        // Street Address
+        if (isset($address['address'])) {
+            $lines[] = $address['address'];
+        }
+
+        // City and Country
+        $location = [];
+        
+        if (isset($address['city'])) {
+            $location[] = $address['city'];
+        } elseif (isset($address['city_id'])) {
+            $city = City::find($address['city_id']);
+            if ($city) {
+                $location[] = $city->name;
+            }
+        }
+
+        if (isset($address['country'])) {
+            $location[] = $address['country'];
+        } elseif (isset($address['country_id'])) {
+            $country = Country::find($address['country_id']);
+            if ($country) {
+                $location[] = $country->name;
+            }
+        }
+
+        if (!empty($location)) {
+            $lines[] = implode(', ', $location);
+        }
+
+        return implode("\n", $lines);
+    }
+}
+
+/**
+ * Get city name from address
+ */
+if(!function_exists('getCityName')){
+    function getCityName($city_id): ?string
+    {
+        return City::find($city_id)?->name;
+    }
+}
+
+/**
+ * Get country name from address
+ */
+if(!function_exists('getCountryName')){
+    function getCountryName($country_id): ?string
+    {
+        return Country::find($country_id)?->name;
+    }
+}
+
+/**
+ * Check if two addresses are the same
+ */
+if(!function_exists('areSame')){
+    function areSame(?array $address1, ?array $address2): bool
+    {
+        if (!$address1 || !$address2) {
+            return false;
+        }
+
+        // Compare relevant fields
+        $fields = ['username', 'phone', 'address', 'city_id', 'country_id'];
+        
+        foreach ($fields as $field) {
+            if (($address1[$field] ?? null) !== ($address2[$field] ?? null)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+/**
+ * Get full address as single line
+ */
+if(!function_exists('getSingleLine')){
+    function getSingleLine(?array $address): string
+    {
+        if (!$address) {
+            return 'N/A';
+        }
+
+        $parts = [];
+
+        if (isset($address['address'])) {
+            $parts[] = $address['address'];
+        }
+
+        $city = getCityName($address);
+        if ($city) {
+            $parts[] = $city;
+        }
+
+        $country = getCountryName($address);
+        if ($country) {
+            $parts[] = $country;
+        }
+
+        return implode(', ', $parts);
     }
 }

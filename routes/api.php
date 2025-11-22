@@ -19,7 +19,8 @@ use App\Http\Controllers\API\{
     UploadImageControll,
     ClientController,
     AnnouncementController,
-    ProductReviewController
+    ProductReviewController,
+    InvoiceController
 };
 
 Route::group(['prefix' => 'dashboard'],function(){
@@ -74,6 +75,8 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 
     Route::apiResource('products',ProductController::class)->only(['index','store','show','destroy']);
     Route::post('products/{product}',[ProductController::class,'update']);
+
+    Route::get('invoice/{order}',[InvoiceController::class,'preview']);
 
 });
 
