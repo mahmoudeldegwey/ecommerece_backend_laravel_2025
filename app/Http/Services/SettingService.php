@@ -43,7 +43,7 @@ class SettingService {
         try {
 
             $data = $request->settings;
-            $settingsData = $this->settingInterFace->loadSettingData()->pluck('value','key')->toArray();
+            $settingsData = $this->settingInterFace->loadSettingData()->toArray();
             $insertData = [];
 
             foreach($data as $key => $value){

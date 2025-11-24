@@ -20,7 +20,8 @@ use App\Http\Controllers\API\{
     ClientController,
     AnnouncementController,
     ProductReviewController,
-    InvoiceController
+    InvoiceController,
+    DashboardStatisticsController
 };
 
 Route::group(['prefix' => 'dashboard'],function(){
@@ -77,6 +78,9 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::post('products/{product}',[ProductController::class,'update']);
 
     Route::get('invoice/{order}',[InvoiceController::class,'preview']);
+
+    //dashboard statistics
+    Route::get('dashboard-statistics',[DashboardStatisticsController::class,'index']);
 
 });
 
