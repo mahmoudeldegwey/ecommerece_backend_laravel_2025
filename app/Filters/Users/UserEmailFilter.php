@@ -1,5 +1,5 @@
 <?php
-namespace App\Filters;
+namespace App\Filters\Users;
 
 use Closure;
 

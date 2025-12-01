@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Coupon;
 use App\Http\Resources\CouponResource;
 use App\Http\Requests\CouponRequest;
+use Illuminate\Pipeline\Pipeline;
+use App\Filters\Coupons\{NameFilter,CodeFilter,TypeFilter};
 
 class CouponController extends Controller
 {
@@ -14,7 +16,16 @@ class CouponController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Coupon::orderBy('id','DESC')->paginate($request->get('paginate',20));
+        $query = Coupon::query();
+
+        $data = app(Pipeline::class)
+        ->send($query)
+        ->through([
+            NameFilter::class,
+            CodeFilter::class,
+            TypeFilter::class
+        ])->thenReturn()
+        ->paginate($request->get('paginate',20));
 
         return CouponResource::collection($data);
     }

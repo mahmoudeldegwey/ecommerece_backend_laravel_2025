@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Size;
 use App\Http\Resources\SizeResource;
 use App\Http\Requests\SizeRequest;
+use Illuminate\Pipeline\Pipeline;
+use App\Filters\Size\NameFilter;
 
 class SizeController extends Controller
 {
@@ -14,7 +16,15 @@ class SizeController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Size::orderBy('id','DESC')->paginate($request->get('paginate',20));
+        $query = Size::query();
+        
+        $data = app(Pipeline::class)
+        ->send($query)
+        ->through([
+            NameFilter::class,
+        ])->thenReturn()
+        ->orderBy('id','DESC')
+        ->paginate($request->get('paginate',20));
 
         return SizeResource::collection($data);
     }

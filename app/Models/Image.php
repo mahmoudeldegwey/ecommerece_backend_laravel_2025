@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends BaseModel
+class Image extends Model
 {
     protected $table = 'images';
 
@@ -14,6 +14,11 @@ class Image extends BaseModel
         'url',
         'model_id',
         'model_type'
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
 }

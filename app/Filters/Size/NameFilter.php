@@ -1,14 +1,14 @@
 <?php
-namespace App\Filters;
+namespace App\Filters\Size;
 
 use Closure;
 
-class UserNameFilter
+class NameFilter
 {
     public function handle($request, Closure $next)
     {
         if (request()->has('name') && request()->name != "") {
-            return $next($request)->where('users.name', request()->name);
+            return $next($request)->where('name', request()->name);
         }
 
         return $next($request);

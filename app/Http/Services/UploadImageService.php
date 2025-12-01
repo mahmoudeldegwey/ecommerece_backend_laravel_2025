@@ -40,8 +40,22 @@ class UploadImageService {
             return $this->makeResponseErrors($e->getMessage());
         }
 
-        return $this->makeResponseSuccessful(['url' =>  $url]);
+        return $this->makeResponseSuccessful(['url' =>  $url,'id' =>  $image->id]);
 
+    }
+
+    public function destroy(Image $image, Request $request)
+    {
+        try {
+            
+            $this->removeImage($request->destination, $image->name, $image->extension);
+            
+            $image->delete();
+        
+
+        } catch (\Exception $e) {
+            return $this->makeResponseErrors($e->getMessage());
+        }
     }
 
     protected function getModelType($model_type){

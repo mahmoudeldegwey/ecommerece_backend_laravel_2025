@@ -32,7 +32,7 @@ trait ImageTrait
         return str_replace(' ', '-', File::name($image->getClientOriginalName()))."-".microtime(true);
     }
 
-    public function removeImage(string $folder = "" ,string $image_name = ""){
-        return File::delete("$folder/$image_name");
+    public function removeImage(string $folder ,string $image_name, string $extention){
+        return File::delete(public_path("$folder/$image_name.$extention"));
     }
 }

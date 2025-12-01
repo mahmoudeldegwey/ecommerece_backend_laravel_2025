@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Color;
 use App\Http\Resources\ColorResource;
 use App\Http\Requests\ColorRequest;
+use Illuminate\Pipeline\Pipeline;
+use App\Filters\Color\NameFilter;
 
 class ColorController extends Controller
 {
@@ -14,7 +16,15 @@ class ColorController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Color::orderBy('id','DESC')->paginate($request->get('paginate',10));
+        $query = Color::query();
+        
+        $data = app(Pipeline::class)
+        ->send($query)
+        ->through([
+            NameFilter::class,
+        ])->thenReturn()
+        ->orderBy('id','DESC')
+        ->paginate($request->get('paginate',20));
 
         return ColorResource::collection($data);
     }

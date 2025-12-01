@@ -7,6 +7,8 @@ use App\Models\Announcement;
 use App\Http\Resources\AnnouncementResource;
 use App\Http\Requests\AnnouncementRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pipeline\Pipeline;
+use App\Filters\Announcements\{NameFilter,StatusFilter};
 
 class AnnouncementController extends Controller
 {
@@ -15,7 +17,16 @@ class AnnouncementController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Announcement::orderBy('id','DESC')->paginate($request->get('paginate',20));
+        $query = Announcement::query();
+
+        $data = app(Pipeline::class)
+        ->send($query)
+        ->through([
+            NameFilter::class,
+            StatusFilter::class
+        ])->thenReturn()
+        ->orderBy('id','DESC')
+        ->paginate($request->get('paginate',20));
 
         return AnnouncementResource::collection($data);
     }

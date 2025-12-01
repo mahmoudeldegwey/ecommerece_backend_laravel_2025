@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Filters\{SuperUserFilter,UserEmailFilter,UserNameFilter};
+use App\Filters\Users\{SuperUserFilter,UserEmailFilter,UserNameFilter};
 use Illuminate\Pipeline\Pipeline;
 use App\Traits\ResponsesTrait;
 

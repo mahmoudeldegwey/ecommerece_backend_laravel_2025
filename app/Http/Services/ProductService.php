@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Pipeline\Pipeline;
 use App\Models\Product;
 use App\Traits\ResponsesTrait;
-use App\Filters\Products\{ProductNameFilter,PriceRangeFilter,BrandIDFilter,CategoryIDFilter,OrderByFilter};
+use App\Filters\Products\{ProductNameFilter,PriceRangeFilter,BrandIDFilter,CategoryIDFilter,OrderByFilter, SkuFilter};
 use App\Http\Resources\ProductResource;
 use App\Traits\ImageTrait;
 use DB;
@@ -39,7 +39,8 @@ class ProductService {
                     PriceRangeFilter::class,
                     BrandIDFilter::class,
                     CategoryIDFilter::class,
-                    OrderByFilter::class
+                    OrderByFilter::class,
+                    SkuFilter::class,
                 ])
                 ->thenReturn()
                 ->orderBy('id',$request->get('order_by','DESC'))

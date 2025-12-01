@@ -10,6 +10,8 @@ use App\Http\Requests\OrderUpdateStatusRequest;
 use App\Mail\NewOrderCreatedEmail;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Pipeline\Pipeline;
+use App\Filters\Orders\{OrderNumberFilter,CustomerNameFilter,CustomerPhoneFilter,StatusFilter};
 use DB;
 use Auth;
 
@@ -20,11 +22,27 @@ class OrderController extends Controller
 	public function index(Request $request) {
         try {
 
-            $data = Order::with(['country','city'])
-                ->select(['id','order_number','total_price','final_cost','products_count','products_quantity','status','created_at',
-                    'updated_at','customer_name','customer_phone','payment_method','shipping_cost','country_id','city_id'])
-            	->orderBy('orders.id','DESC')
-            	->paginate($request->paginate ?? $this->paginate);
+            $query = Order::with(['country','city'])
+                ->select(['id',
+                'order_number','total_price',
+                'final_cost','products_count','products_quantity','status',
+                'created_at',
+                    'updated_at','customer_name','customer_phone',
+                    'payment_method','shipping_cost','country_id','city_id'
+                ]);
+
+            $data =  app(Pipeline::class)
+                ->send($query)
+                ->through([
+                    OrderNumberFilter::class,
+                    CustomerNameFilter::class,
+                    CustomerPhoneFilter::class,
+                    StatusFilter::class,
+                ])
+                ->thenReturn()
+                ->orderBy('id',$request->get('order_by','DESC'))
+                ->paginate($request->get('paginate',20));
+
 
         } catch (\Exception $e) { 
             return $this->makeResponseErrors($e->getMessage());
